@@ -81,7 +81,7 @@ public class FlappyBirdGame extends Application {
     }
 
     private void createSun() {
-        Circle sun = new Circle(65, 20, 20, Color.YELLOW);
+        Circle sun = new Circle(50, 50, 40, Color.YELLOW);
         gamePane.getChildren().add(sun);
     }
 
