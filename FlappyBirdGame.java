@@ -65,7 +65,7 @@ public class FlappyBirdGame extends Application {
         // Use Timeline for obstacle generation with a 5-second delay
         Timeline obstacleTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(3), event -> {
-                    if (gameRunning == true) {
+                    if (gameRunning) {
                         createObstacle();
                     }
                 })
