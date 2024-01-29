@@ -80,13 +80,13 @@ public class FlappyBirdGame extends Application {
     }
 
     private void createHills() {
-        Ellipse hill1 = new Ellipse(120, 725, 900, 320);
+        Ellipse hill_left = new Ellipse(120, 725, 900, 320);
         hill1.setFill(Color.LIGHTGREEN);
-        Ellipse hill2 = new Ellipse(1000, 725, 900, 320);
+        Ellipse hill_right = new Ellipse(1000, 725, 900, 320);
         hill2.setFill(Color.LIGHTGREEN);
 
-        gamePane.getChildren().add(hill1);
-        gamePane.getChildren().add(hill2);
+        gamePane.getChildren().add(hill_left);
+        gamePane.getChildren().add(hill_right);
     }
 
     private void createObstacle() {
@@ -110,8 +110,8 @@ public class FlappyBirdGame extends Application {
     private void death() {
         gameRunning = false;
         gameLoop.stop();
-        death = new Text(120, 180, "You have died. Click To Restart!");
-        gamePane.getChildren().add(death);
+        //death = new Text(120, 180, "You have died. Click To Restart!");
+       //gamePane.getChildren().add(death); // no reason to add these, looks bad.
         gamePane.getChildren().remove(bird);
 
     }
