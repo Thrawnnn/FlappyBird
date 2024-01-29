@@ -80,9 +80,9 @@ public class FlappyBirdGame extends Application {
     }
 
     private void createHills() {
-        Ellipse hill_left = new Ellipse(120, 725, 900, 320);
+        Ellipse hill_left = new Ellipse(120, 815, 1000, 320);
         hill_left.setFill(Color.LIGHTGREEN);
-        Ellipse hill_right = new Ellipse(1000, 725, 900, 320);
+        Ellipse hill_right = new Ellipse(1000, 815, 1350, 290);
         hill_right.setFill(Color.LIGHTGREEN);
 
         gamePane.getChildren().add(hill_left);
