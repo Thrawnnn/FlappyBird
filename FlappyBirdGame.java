@@ -40,6 +40,7 @@ public class FlappyBirdGame extends Application {
         primaryStage.setTitle("Flappy Bird DEMO");
         primaryStage.setScene(scene);
         createHills();
+        createSun();
         createBird();
         obstacles = new ArrayList<>();
 
@@ -79,10 +80,15 @@ public class FlappyBirdGame extends Application {
         gamePane.getChildren().add(bird);
     }
 
+    private void createSun() {
+        Circle sun = new Circle(50, 50, 40, Color.YELLOW);
+        gamePane.getChildren().add(sun);
+    }
+
     private void createHills() {
-        Ellipse hill_left = new Ellipse(120, 725, 900, 320);
+        Ellipse hill_left = new Ellipse(120, 815, 1000, 320);
         hill_left.setFill(Color.LIGHTGREEN);
-        Ellipse hill_right = new Ellipse(1000, 725, 900, 320);
+        Ellipse hill_right = new Ellipse(1000, 815, 1350, 290);
         hill_right.setFill(Color.LIGHTGREEN);
 
         gamePane.getChildren().add(hill_left);
@@ -140,6 +146,7 @@ public class FlappyBirdGame extends Application {
         bird.setCenterY(300);
         gameRunning = true;
         createHills();
+        createSun();
         createBird();
         obstacles.clear();
         createObstacle();
