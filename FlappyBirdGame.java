@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+// TODO: Add a Main Menu esq UI.
+
 public class FlappyBirdGame extends Application {
     private Pane gamePane;
     private Circle bird;
