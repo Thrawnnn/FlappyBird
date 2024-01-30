@@ -44,6 +44,7 @@ public class FlappyBirdGame extends Application {
         createHills();
         createSun();
         createBird();
+        DrawMainMenu();
         obstacles = new ArrayList<>();
 
         scene.setOnMouseClicked(event -> {
@@ -85,6 +86,38 @@ public class FlappyBirdGame extends Application {
     private void createSun() {
         Circle sun = new Circle(50, 50, 40, Color.YELLOW);
         gamePane.getChildren().add(sun);
+    }
+
+       public void DrawMainMenu() {
+        gameRunning = false;
+
+        Rectangle rectangle = new Rectangle();
+        Rectangle outline = new Rectangle();
+
+        outline.setX(808.0f);
+        outline.setY(403.0f);
+        outline.setWidth(304.0f);
+        outline.setHeight(154.0f);
+
+        outline.setArcWidth(33.0);
+        outline.setArcHeight(23.0);
+
+        rectangle.setX(810.0f);
+        rectangle.setY(405.0f);
+        rectangle.setWidth(300.0f);
+        rectangle.setHeight(150.0f);
+
+        rectangle.setArcWidth(30.0);
+        rectangle.setArcHeight(20.0);
+
+        Text mainString = new Text(855, 480, "Click anywhere to Play!");
+        mainString.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+
+        Group root = new Group(outline,rectangle, mainString);
+        rectangle.setFill(Color.WHITESMOKE);
+        outline.setFill(Color.BLACK);
+
+        gamePane.getChildren().add(root);
     }
 
     public void DrawDeathBox() {
