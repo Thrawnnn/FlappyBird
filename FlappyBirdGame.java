@@ -14,10 +14,15 @@ import javafx.scene.text.Text;
 import javafx.scene.shape.Ellipse;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javafx.scene.Group;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 public class FlappyBirdGame extends Application {
     private Pane gamePane;
@@ -29,6 +34,8 @@ public class FlappyBirdGame extends Application {
     private boolean gameRunning = true;
     private AnimationTimer gameLoop;
     private Text death;
+
+
 
     Random rand = new Random();
 
@@ -86,7 +93,37 @@ public class FlappyBirdGame extends Application {
         gamePane.getChildren().add(sun);
     }
 
-       public void DrawMainMenu() {
+    public void DrawDeathBox() {
+        Rectangle rectangle = new Rectangle();
+        Rectangle outline = new Rectangle();
+
+        outline.setX(808.0f);
+        outline.setY(403.0f);
+        outline.setWidth(304.0f);
+        outline.setHeight(154.0f);
+
+        outline.setArcWidth(33.0);
+        outline.setArcHeight(23.0);
+
+        rectangle.setX(810.0f);
+        rectangle.setY(405.0f);
+        rectangle.setWidth(300.0f);
+        rectangle.setHeight(150.0f);
+
+        rectangle.setArcWidth(30.0);
+        rectangle.setArcHeight(20.0);
+
+        death = new Text(825, 480, "You have died. Click To Restart!");
+        death.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+
+        Group root = new Group(outline,rectangle, death);
+        rectangle.setFill(Color.WHITESMOKE);
+        outline.setFill(Color.BLACK);
+
+        gamePane.getChildren().add(root);
+    }
+
+    public void DrawMainMenu() {
         gameRunning = false;
 
         Rectangle rectangle = new Rectangle();
@@ -118,36 +155,6 @@ public class FlappyBirdGame extends Application {
         gamePane.getChildren().add(root);
     }
 
-    public void DrawDeathBox() {
-        Rectangle rectangle = new Rectangle();
-        Rectangle outline = new Rectangle();
-
-        outline.setX(808.0f);
-        outline.setY(403.0f);
-        outline.setWidth(304.0f);
-        outline.setHeight(154.0f);
-
-        outline.setArcWidth(33.0);
-        outline.setArcHeight(23.0);
-
-        rectangle.setX(810.0f);
-        rectangle.setY(405.0f);
-        rectangle.setWidth(300.0f);
-        rectangle.setHeight(150.0f);
-
-        rectangle.setArcWidth(30.0);
-        rectangle.setArcHeight(20.0);
-
-        death = new Text(825, 480, "You have died. Click To Restart!");
-        death.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-
-        Group root = new Group(outline,rectangle, death);
-        rectangle.setFill(Color.WHITESMOKE);
-        outline.setFill(Color.BLACK);
-
-        gamePane.getChildren().add(root);
-    }
-
     private void createHills() {
         Ellipse hill_left = new Ellipse(120, 815, 1000, 320);
         hill_left.setFill(Color.LIGHTGREEN);
@@ -159,7 +166,7 @@ public class FlappyBirdGame extends Application {
     }
 
     private void createObstacle() {
-        double obstacleHeight = 100 + rand.nextDouble() * 300; 
+        double obstacleHeight = 100 + rand.nextDouble() * 300;
         double gap = rand.nextDouble(150, 400);
 
         // Top obstacle
