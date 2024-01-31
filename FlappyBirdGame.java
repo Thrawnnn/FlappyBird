@@ -44,7 +44,7 @@ public class FlappyBirdGame extends Application {
         gamePane = new Pane();
         Scene scene = new Scene(gamePane, 1900, 1000);
         scene.setFill(Color.LIGHTBLUE);
-        primaryStage.setTitle("Flappy Bird DEMO");
+        primaryStage.setTitle("JavaFX Flappy Bird DEMO");
         primaryStage.setFullScreen(true);
         primaryStage.setScene(scene);
         createHills();
@@ -55,9 +55,9 @@ public class FlappyBirdGame extends Application {
 
         scene.setOnMouseClicked(event -> {
             if (gameRunning) {
-                birdVelocity = JUMP_FORCE;
+                birdVelocity = JUMP_FORCE; // Click event to determine when the bird should move, as well as functionality for the menus.
             } else {
-                resetGame();
+                resetGame(); // resets the game for the functionality, very hacky.
             }
         });
 
@@ -65,37 +65,36 @@ public class FlappyBirdGame extends Application {
             @Override
             public void handle(long now) {
                 if (gameRunning) {
-                    updateGame();
+                    updateGame(); // calls the update game method to determine what happens while the game is running
                 }
             }
         };
-        gameLoop.start();
+        gameLoop.start(); // technical stuff required for the code to work
         primaryStage.show();
 
-        // Use Timeline for obstacle generation with a 5-second delay
         Timeline obstacleTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(3), event -> {
                     if (gameRunning) {
-                        createObstacle();
+                        createObstacle(); // hacky autogeneration fix, creates a timer then uses the end of that timer to create a new obstacle at a different location along the X Axis
                     }
                 })
         );
-        obstacleTimeline.setCycleCount(Animation.INDEFINITE);
+        obstacleTimeline.setCycleCount(Animation.INDEFINITE); // animation technical stuff
         obstacleTimeline.play();
     }
 
     private void createBird() {
         bird = new Circle(50, 300, 20, Color.YELLOW);
-        gamePane.getChildren().add(bird);
+        gamePane.getChildren().add(bird); // bird object (i love OOP!!!!)
     }
 
     private void createSun() {
         Circle sun = new Circle(50, 50, 40, Color.YELLOW);
-        gamePane.getChildren().add(sun);
+        gamePane.getChildren().add(sun); // sun object -_-
     }
 
     public void DrawDeathBox() {
-        Rectangle rectangle = new Rectangle();
+        Rectangle rectangle = new Rectangle(); // death box derma for when you die in the game, parent of the main menu
         Rectangle outline = new Rectangle();
 
         outline.setX(808.0f);
@@ -125,28 +124,28 @@ public class FlappyBirdGame extends Application {
     }
 
     public void DrawMainMenu() {
-        gameRunning = false;
+        gameRunning = false; // stops the game (DONT USE THE gameLoop.end() method!!! This will break the program!)
 
         Rectangle rectangle = new Rectangle();
-        Rectangle outline = new Rectangle();
+        Rectangle outline = new Rectangle(); 
 
-        outline.setX(808.0f);
+        outline.setX(808.0f); // outline for the rectangle
         outline.setY(403.0f);
         outline.setWidth(304.0f);
         outline.setHeight(154.0f);
 
-        outline.setArcWidth(33.0);
+        outline.setArcWidth(33.0); // arcs for the curved outline edges
         outline.setArcHeight(23.0);
 
-        rectangle.setX(810.0f);
+        rectangle.setX(810.0f); // actual rectangle which the text is drawn on
         rectangle.setY(405.0f);
         rectangle.setWidth(300.0f);
         rectangle.setHeight(150.0f);
 
-        rectangle.setArcWidth(30.0);
+        rectangle.setArcWidth(30.0); // arcs for the curved rectangle edges
         rectangle.setArcHeight(20.0);
 
-        Text mainString = new Text(855, 480, "Click anywhere to Play!");
+        Text mainString = new Text(855, 480, "Click anywhere to Play!"); // text for what is supposed to be dispplayed
         mainString.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 
         Group root = new Group(outline,rectangle, mainString);
@@ -162,7 +161,7 @@ public class FlappyBirdGame extends Application {
         Ellipse hill_right = new Ellipse(1000, 1015, 1350, 435);
         hill_right.setFill(Color.LIGHTGREEN);
 
-        gamePane.getChildren().add(hill_left);
+        gamePane.getChildren().add(hill_left); // Hills!!!
         gamePane.getChildren().add(hill_right);
     }
 
@@ -180,7 +179,7 @@ public class FlappyBirdGame extends Application {
         Rectangle bottomObstacle = new Rectangle(400, obstacleHeight + gap, 50, gamePane.getHeight() - obstacleHeight - gap);
         bottomObstacle.setFill(Color.GREEN);
         obstacles.add(bottomObstacle);
-        gamePane.getChildren().add(bottomObstacle);
+        gamePane.getChildren().add(bottomObstacle); // obstacles, also handles very basic autogeneration
     }
 
 
@@ -188,7 +187,7 @@ public class FlappyBirdGame extends Application {
         gameRunning = false;
         gameLoop.stop();
         DrawDeathBox();
-        gamePane.getChildren().remove(bird);
+        gamePane.getChildren().remove(bird); // "death" effect for the game, ends the loop and stops the animation. After that it draws the derma box seen in the above code
     }
 
     private void updateGame() {
@@ -205,7 +204,7 @@ public class FlappyBirdGame extends Application {
 
             if (obstacle.getBoundsInParent().intersects(bird.getBoundsInParent())) {
                 death();
-            }
+            } // technical stuff for animation of the JavaFX program
         }
     }
 
@@ -220,9 +219,9 @@ public class FlappyBirdGame extends Application {
         obstacles.clear();
         createObstacle();
         gameLoop.start();
-    }
+    }// used to reset the game
 
     public static void main(String[] args) {
         launch(args);
-    }
+    } // yeeee boiiii :DDDD
 }
