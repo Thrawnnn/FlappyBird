@@ -5,24 +5,22 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import javafx.scene.Group;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-
-// yucky imports :(
 
 public class FlappyBirdGame extends Application {
     private Pane gamePane;
@@ -33,26 +31,19 @@ public class FlappyBirdGame extends Application {
     private double birdVelocity = 0;
     private boolean gameRunning = true;
     private AnimationTimer gameLoop;
-    int Interval = 0;
-    Random rand = new Random();
-
-
-    private Rectangle topPipe;
-
-    private Rectangle bottomPipe;
-
-    // variable init and dec.
-
+    private int interval = 0;
+    private Random rand = new Random();
+    private int score = 0;
+    private Text scoreText;
 
     @Override
     public void start(Stage primaryStage) {
-
         gamePane = new Pane();
         Scene scene = new Scene(gamePane, 1900, 1000);
         scene.setFill(Color.LIGHTBLUE);
         primaryStage.setTitle("JavaFX Flappy Bird DEMO");
-        primaryStage.setFullScreen(true);
         primaryStage.setScene(scene);
+        primaryStage.setFullScreen(true);
         createHills();
         createSun();
         createBird();
@@ -61,9 +52,9 @@ public class FlappyBirdGame extends Application {
 
         scene.setOnMouseClicked(event -> {
             if (gameRunning) {
-                birdVelocity = JUMP_FORCE; // Click event to determine when the bird should move, as well as functionality for the menus.
+                birdVelocity = JUMP_FORCE;
             } else {
-                resetGame(); // resets the game for the functionality, very hacky.
+                resetGame();
             }
         });
 
@@ -71,50 +62,53 @@ public class FlappyBirdGame extends Application {
             @Override
             public void handle(long now) {
                 if (gameRunning) {
-                    updateGame(); // calls the update game method to determine what happens while the game is running
+                    updateGame();
                 }
-
             }
         };
-        gameLoop.start(); // technical stuff required for the code to work
+        gameLoop.start();
         primaryStage.show();
 
         Timeline obstacleTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(.01), event -> {
-                    if (!gameRunning){
-                        Interval = 0;
-                    }else if (gameRunning) {
-                        Interval = Interval + 250;
+                new KeyFrame(Duration.seconds(0.01), event -> {
+                    if (gameRunning) {
+                        interval = interval + 250;
                         double gap = rand.nextDouble(150, 400);
                         double obstacleHeight = 100 + rand.nextDouble() * 300;
-                        createObstacle(); // hacky autogenerate fix, creates a timer then uses the end of that timer to create a new obstacle at a different location along the X Axis
-                        topPipe = new Rectangle(400 + Interval, 0, 50, obstacleHeight);
-                        bottomPipe =  new Rectangle(400 + Interval, obstacleHeight + gap, 50, gamePane.getHeight() - obstacleHeight - gap);
-                        Rectangle topObstacle = topPipe;
-                        topPipe.setFill(Color.GREEN);
-                        obstacles.add(topPipe);
-                        gamePane.getChildren().add(topPipe);
-
-                        // Bottom obstacle
-                        Rectangle bottomObstacle = bottomPipe;
-                        bottomPipe.setFill(Color.GREEN);
-                        obstacles.add(bottomPipe);
-                        gamePane.getChildren().add(bottomPipe); // obstacles, also handles very basic auto-generation
-                    } // forgive me lol
+                        createObstacle(400 + interval, obstacleHeight, gap);
+                    }
                 })
         );
-        obstacleTimeline.setCycleCount(Animation.INDEFINITE); // animation technical stuff
+
+        Timeline scoreTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(1.75), event -> {
+                    if (gameRunning) {
+                        score++;
+                        updateScore();
+                    }
+                })
+        );
+
+        obstacleTimeline.setCycleCount(Animation.INDEFINITE);
         obstacleTimeline.play();
+
+        scoreTimeline.setCycleCount(Animation.INDEFINITE);
+        scoreTimeline.play();
     }
 
     private void createBird() {
         bird = new Circle(50, 300, 20, Color.YELLOW);
-        gamePane.getChildren().add(bird); // bird object (i love OOP!!!!)
+        gamePane.getChildren().add(bird);
     }
 
-    private void createSun() {
-        Circle sun = new Circle(50, 50, 40, Color.YELLOW);
-        gamePane.getChildren().add(sun); // sun object -_-
+    private void createHills() {
+        Ellipse hill_left = new Ellipse(120, 1015, 1000, 420);
+        hill_left.setFill(Color.LIGHTGREEN);
+        Ellipse hill_right = new Ellipse(1000, 1015, 1350, 435);
+        hill_right.setFill(Color.LIGHTGREEN);
+
+        gamePane.getChildren().add(hill_left); // Hills!!!
+        gamePane.getChildren().add(hill_right);
     }
 
     public void DrawDeathBox() {
@@ -140,7 +134,10 @@ public class FlappyBirdGame extends Application {
         Text death = new Text(825, 480, "You have died. Click To Restart!");
         death.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 
-        Group root = new Group(outline,rectangle, death);
+        Text deathScoreText = new Text(875, 500, "Your score was: " + score);
+        deathScoreText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+
+        Group root = new Group(outline,rectangle, death, deathScoreText);
         rectangle.setFill(Color.WHITESMOKE);
         outline.setFill(Color.BLACK);
 
@@ -149,6 +146,7 @@ public class FlappyBirdGame extends Application {
 
     public void DrawMainMenu() {
         gameRunning = false; // stops the game (DON'T USE THE gameLoop.end() method!!! This will break the program!)
+        gamePane.getChildren().remove(bird);
 
         Rectangle rectangle = new Rectangle();
         Rectangle outline = new Rectangle();
@@ -172,45 +170,39 @@ public class FlappyBirdGame extends Application {
         Text mainString = new Text(855, 480, "Click anywhere to Play!"); // text for what is supposed to be displayed
         mainString.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
 
-        Group root = new Group(outline,rectangle, mainString);
+        Group menu = new Group(outline,rectangle);
+        Group root = new Group(menu,mainString);
         rectangle.setFill(Color.WHITESMOKE);
         outline.setFill(Color.BLACK);
 
         gamePane.getChildren().add(root);
     }
 
-    private void createHills() {
-        Ellipse hill_left = new Ellipse(120, 1015, 1000, 420);
-        hill_left.setFill(Color.LIGHTGREEN);
-        Ellipse hill_right = new Ellipse(1000, 1015, 1350, 435);
-        hill_right.setFill(Color.LIGHTGREEN);
-
-        gamePane.getChildren().add(hill_left); // Hills!!!
-        gamePane.getChildren().add(hill_right);
+    private void createSun() {
+        Circle sun = new Circle(50, 50, 40, Color.YELLOW);
+        gamePane.getChildren().add(sun); // sun object -_-
     }
 
-    private void createObstacle() {
+    private void createObstacle(double x, double obstacleHeight, double gap) {
+        Rectangle topObstacle = new Rectangle(x, 0, 50, obstacleHeight);
+        Rectangle bottomObstacle = new Rectangle(x, obstacleHeight + gap, 50, gamePane.getHeight() - obstacleHeight - gap);
 
+        topObstacle.setFill(Color.GREEN);
+        bottomObstacle.setFill(Color.GREEN);
 
-        // Top obstacle
+        obstacles.add(topObstacle);
+        obstacles.add(bottomObstacle);
 
-
-    }
-
-
-    private void death() {
-        gameRunning = false;
-        gameLoop.stop();
-        DrawDeathBox();
-        gamePane.getChildren().remove(bird); // "death" effect for the game, ends the loop and stops the animation. After that it draws the derma box seen in the above code
+        gamePane.getChildren().add(topObstacle);
+        gamePane.getChildren().add(bottomObstacle);
     }
 
     private void updateGame() {
-        birdVelocity += GRAVITY; // GRAVITY!!!!!!!! Yummy physics :>
-        bird.setCenterY(bird.getCenterY() + birdVelocity); // sets the bird
+        birdVelocity += GRAVITY;
+        bird.setCenterY(bird.getCenterY() + birdVelocity);
 
         if (bird.getCenterY() < 0 || bird.getCenterY() > gamePane.getHeight()) {
-            death(); // if the bird leaves the screen then the game ends and the bird dies :(
+            death();
         }
 
         for (Rectangle obstacle : obstacles) {
@@ -218,7 +210,7 @@ public class FlappyBirdGame extends Application {
 
             if (obstacle.getBoundsInParent().intersects(bird.getBoundsInParent())) {
                 death();
-            } // if the bird hits an obstacle then the game ends and the bird dies :(
+            }
         }
     }
 
@@ -228,15 +220,32 @@ public class FlappyBirdGame extends Application {
         bird.setCenterY(300);
         gameRunning = true;
         createHills();
-        createSun();
-        Interval = 0;
         createBird();
+        createSun();
         obstacles.clear();
+        interval = 0;
+        score = 0;
+        updateScore();
         gameLoop.start();
-        createObstacle();
-    }// used to reset the game
+    }
+
+    private void death() {
+        gameRunning = false;
+        gameLoop.stop();
+        gamePane.getChildren().remove(bird); // "death" effect for the game, ends the loop and stops the animation. After that it draws the UI box seen in the above code
+        DrawDeathBox();
+    }
+
+    private void updateScore() {
+        if (scoreText != null) {
+            gamePane.getChildren().remove(scoreText);
+        }
+        scoreText = new Text(20, 50, "Score: " + score);
+        scoreText.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 25));
+        gamePane.getChildren().add(scoreText);
+    }
 
     public static void main(String[] args) {
         launch(args);
-    } // yeeee boiiii :DDDD
+    }
 }
